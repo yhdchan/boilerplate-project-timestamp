@@ -24,13 +24,10 @@ app.get("/api/hello", function (req, res) {
 });
 
 app.get("/api/:time?", (req, res) => {
-  const time = /\-/g.test(req.params.time) ? req.params.time : +req.params.time;
+  const time = req.params.time;
   if (time) {
-    const dateReq = new Date(time);
-    if (
-      dateReq.toUTCString() === "Invalid Date" ||
-      isNaN(dateReq.valueOf()) === true
-    ) {
+    const dateReq = /^[0-9]+$/.test(time) ? new Date(+time) : new Date(time);
+    if (isNaN(dateReq.valueOf())) {
       res.status(400).send({ error: "Invalid Date" });
     } else {
       const unix = dateReq.valueOf();
